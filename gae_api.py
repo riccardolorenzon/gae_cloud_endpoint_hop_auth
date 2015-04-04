@@ -5,23 +5,25 @@ from protorpc import message_types
 from protorpc import remote
 
 class GaeRequest(messages.Message):
-  string_value = messages.StringField(10)
-  number_value = messages.IntegerField(2, required=True)
+  id_value = messages.StringField(1, required=True)
+  string_value = messages.StringField(2, required=True)
 
 class GaeResponse(messages.Message):
-  string_value = messages.StringField(10)
+  id_value = messages.StringField(1, required=True)
+  string_value = messages.StringField(2)
 
-@endpoints.api(name='gaeApi',version='v1',
-               description='simple endpoints with a read and write component')
+@endpoints.api(name='readWriteApi',version='v1',
+               description='simple endpoint class with a read and write component')
 class GaeApi(remote.Service):
     @endpoints.method(GaeRequest,
                   GaeResponse,
                   name='read',
                   http_method='GET')
-    def read(self, request):
+    def read_value(self, request):
         try:
             gae_response = GaeResponse()
-            gae_response.string_value = 'hi'
+            gae_response.id_value = 'resource id : ' + request.id_value
+            gae_response.string_value = 'value retrieved in db'
             return gae_response
         except (IndexError, TypeError):
             raise endpoints.NotFoundException('Couldn''t handle a GET request ' + TypeError.__str__())
@@ -30,7 +32,7 @@ class GaeApi(remote.Service):
                   GaeResponse,
                   name='write',
                   http_method='POST')
-    def write(self, request):
+    def write_value(self, request):
         try:
             return 'handled a POST request'
         except (IndexError, TypeError):
