@@ -8,12 +8,13 @@ handlers:
 - url: /favicon\.ico
   static_files: favicon.ico
   upload: favicon\.ico
-
 - url: /_ah/spi/.*
   script: services.application
-
-- url: .*
-  script: main.app
+- url: /js
+  static_dir: static/js
+- url: /
+  static_files: templates/index.html
+  upload: templates/index\.html
 
 libraries:
 - name: webapp2
