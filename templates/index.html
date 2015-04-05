@@ -10,33 +10,35 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar">
         <div class="navbar-inner">
             <div class="container">
-                <h1>Google Cloud Endpoint test page!</h1>
+                <h2>Google Cloud Endpoint test page</h2>
             </div>
         </div>
     </div>
-    <div class="container">
+    <div class="container" ng-controller="maincController">
 
-        <output id="outputLog"></output>
-
-        <form onsubmit="return false;">
+        <form ng-submit="read()">
             <h2>Read</h2>
-            <div><label for="read_id">entity ID:</label><input id="read_id" /></div>
+            <div><label for="read_id">entity ID:</label><input id="read_id" ng-model="read_id"/></div>
             <div><input id="submitRead" type="submit" class="btn btn-small" value="Submit"></div>
         </form>
 
-        <form onsubmit="return false;">
+        {{read_output}}
+
+        <form ng-submit="write()">
             <h2>Write</h2>
-            <div><label for="write_id">entity ID:</label><input id="write_id" /></div>
-            <div><label for="write_string_value">entity ID:</label><input id="write_string_value" /></div>
+            <div><label for="write_id">entity ID:</label><input id="write_id" ng-model="write_id"/></div>
+            <div><label for="write_string_value">string value:</label><input id="write_string_value" ng-model="write_string_value" /></div>
             <div><input id="submitWrite" type="submit" class="btn btn-small" value="Submit"></div>
         </form>
 
+        {{write_output}}
+
         <script>
             function init() {
-                google.appengine.samples.hello.init('//' + window.location.host + '/_ah/api');
+
             }
         </script>
         <script src="https://apis.google.com/js/client.js?onload=init"></script>
