@@ -70,11 +70,10 @@ class GaeApi(remote.Service):
                 else:
                     entity = None
             if entity == None:
-                entity = Entity(string_value=request.string_value)
-                entity.put()
+                raise endpoints.BadRequestException('Resource with string value {0} not found'.format(request.string_value))
             entity_urlsafe = entity.key.urlsafe()
             gae_response.id_value = '{0}'.format(entity_urlsafe)
             gae_response.string_value = '{0}'.format(entity.string_value)
             return gae_response
         except Exception as ex:
-            raise endpoints.NotFoundException('Couldn''t handle a GET request, ex:' + ex.message)
+            raise endpoints.NotFoundException('Couldn''t handle a POST request, ex:' + ex.message)
