@@ -7,8 +7,8 @@ from models.entity import Entity
 from google.appengine.ext import ndb
 
 class GaeRequest(messages.Message):
-  id_value = messages.StringField(1, required=True)
-  string_value = messages.StringField(2)
+  id_value = messages.StringField(1)
+  string_value = messages.StringField(2, required=True)
 
 class GaeResponse(messages.Message):
   id_value = messages.StringField(1, required=True)
@@ -29,7 +29,15 @@ class GaeApi(remote.Service):
         """
         try:
             gae_response = GaeResponse()
-            entity = ndb.Key(urlsafe=request.id_value).get()
+            # get the entity from the string
+            if not request.string_value:
+                entity = None
+            else:
+                entity_list = Entity.query(Entity.string_value == request.string_value).fetch(1)
+                if len(entity_list) != 0:
+                    entity = entity_list[0]
+                else:
+                    entity = None
             if entity == None:
                 entity = Entity(string_value=request.string_value)
                 entity.put()
@@ -52,13 +60,21 @@ class GaeApi(remote.Service):
         """
         try:
             gae_response = GaeResponse()
-            entity = ndb.Key(urlsafe=request.id_value).get()
+            # get the entity from the string
+            if not request.string_value:
+                entity = None
+            else:
+                entity_list = Entity.query(Entity.string_value == request.string_value).fetch(1)
+                if len(entity_list) != 0:
+                    entity = entity_list[0]
+                else:
+                    entity = None
             if entity == None:
-                raise endpoints.ServiceException('requested entity {0} not found'.format(request.id_value))
-            entity.string_value = request.string_value
-            entity.put()
-            gae_response.id_value = '{0}'.format(entity.key.urlsafe())
+                entity = Entity(string_value=request.string_value)
+                entity.put()
+            entity_urlsafe = entity.key.urlsafe()
+            gae_response.id_value = '{0}'.format(entity_urlsafe)
             gae_response.string_value = '{0}'.format(entity.string_value)
             return gae_response
-        except (IndexError, TypeError):
-            raise endpoints.NotFoundException('Couldn''t handle a POST request ' + TypeError.__str__())
+        except Exception as ex:
+            raise endpoints.NotFoundException('Couldn''t handle a GET request, ex:' + ex.message)

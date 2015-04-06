@@ -23,7 +23,7 @@ from protorpc import remote
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-        self.response.write('Hello world!')
+        self.response.write('Google cloud enpoints API.')
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler)
