@@ -28,13 +28,17 @@ gae_hopster_auth_frontend_module.controller('mainController', function($scope, $
             immediate: mode},
         authorizeCallback);
 }
-    $scope.userAuthed = function(){
-        request =
-            gapi.client.oauth2.userinfo.get().execute(function(resp) {
-        if (!resp.code) {
-            // User is signed in, call my Endpoint
-            }
-        });
+    $scope.userAuthed = function() {
+        if (typeof gapi.client.oauth2 !== 'undefined')
+        {
+            request =
+                gapi.client.oauth2.userinfo.get().execute(function (resp) {
+                    if (!resp.code) {
+                        // User is signed in, call my Endpoint
+                    }
+                });
+        }
+
     }
 
     $scope.read = function() {
